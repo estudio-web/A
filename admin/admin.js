@@ -2,6 +2,8 @@
 // admin/admin.js — Panel de administración
 // Maneja: auth, CRUD productos, pedidos, promociones
 // ============================================================
+// 🔥 ImgBB API KEY (GLOBAL)
+
 import { db, auth } from '../firebase.js';
 import {
   signInWithEmailAndPassword,
@@ -13,11 +15,14 @@ import {
   getDocs, getDoc, query, orderBy, where,
   serverTimestamp, Timestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+// 🔥 ImgBB API KEY (GLOBAL)
+const IMGBB_API_KEY = '9ed686117bdb0d5263132a2e5ec5b094';
+console.log(IMGBB_API_KEY);
+
 
 // ── Utilidades ────────────────────────────────────────────── //
 const $  = (sel, ctx = document) => ctx.querySelector(sel);
 const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
-
 const IS_LOGIN    = document.body.classList.contains('auth-body');
 const IS_DASH     = document.body.classList.contains('dash-body');
 const PAGE_IS_LOGIN = window.location.pathname.includes('login');
@@ -261,8 +266,7 @@ if (PAGE_IS_DASH) {
         </div>`;
     }).join('');
 
-    const IMGBB_API_KEY = '9ed686117bdb0d5263132a2e5ec5b094'; // 🔥key
-
+    
 async function subirImagenImgBB(file) {
   const status = document.getElementById('img-upload-status');
   status.innerText = '⏳ Subiendo imagen...';
@@ -394,6 +398,8 @@ async function subirImagenImgBB(file) {
 
       const formData = new FormData();
       formData.append('image', fileInput.files[0]);
+
+
 
       const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
         method: 'POST',
