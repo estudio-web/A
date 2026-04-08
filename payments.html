@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Confirmar Pago</title>
+
+<style>
+body {
+  font-family: Arial;
+  background:#3e72e9;
+  color:white;
+  padding:20px;
+}
+
+.container {
+  max-width:500px;
+  margin:auto;
+}
+
+.card {
+  background:#1e293b;
+  padding:20px;
+  border-radius:12px;
+  margin-bottom:15px;
+}
+
+.label { opacity:.7; font-size:13px; }
+.value { font-weight:bold; margin-bottom:10px; }
+
+input, button {
+  width:92%;
+  padding:10px;
+  margin-top:10px;
+  border-radius:8px;
+  border:none;
+}
+
+button {
+  background:#22c55e;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+  width: 100%;
+}
+
+.loader {
+  display:none;
+  text-align:center;
+  margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h2>💳 Confirmar pago</h2>
+
+  <div class="card">
+    <div class="label">Titular</div>
+    <div class="value">JONATAN ISMAEL QUILPATAY</div>
+
+    <div class="label">CBU</div>
+    <div class="value">0000003100032339781196</div>
+
+    <div class="label">Alias</div>
+    <div class="value">pagof99</div>
+
+    <div class="label">Monto a pagar</div>
+    <div class="value" id="monto">$30.000</div>
+  </div>
+
+<h2>Envio de Comprobante</h2>
+
+  <div class="card">
+    <input type="text" id="nombre" placeholder="Tu nombre y apellido">
+    <input type="text" id="dni" placeholder="Tu DNI">
+    <input type="file" id="comprobante" accept="image/*">
+
+    <button onclick="enviarPago()">Enviar comprobante</button>
+
+    <div class="loader" id="loader">⏳ Subiendo comprobante...</div>
+  </div>
+
+</div>
+
+<script>
+const IMGBB_API_KEY = "9ed686117bdb0d5263132a2e5ec5b094"; // 🔥
+
+const MONTO = 30000;
+const WHATSAPP = "5492646706973"; // tu número
+
+async function enviarPago() {
+
+  const nombre = document.getElementById('nombre').value;
+    const dni = document.getElementById('dni').value;
+  const file = document.getElementById('comprobante').files[0];
+  const loader = document.getElementById('loader');
+
+  if (!nombre || !dni || !file) {
+    alert("Completa todos los datos");
+    return;
+  }
+
+  loader.style.display = "block";
+
+  try {
+    const formData = new FormData();
+    formData.append("image", file);
+
+    const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+      method: "POST",
+      body: formData
+    });
+
+    const data = await res.json();
+
+    if (!data.success) throw new Error("Error ImgBB");
+
+    const url = data.data.url;
+
+    // 📲 mensaje whatsapp
+    const msg = encodeURIComponent(
+      `💸 *COMPROBANTE DE PAGO*\n\n` +
+      `👤 Nombre: ${nombre}\n` +
+      `📲 DNI: ${dni}\n` +
+      `💰 Monto: $${MONTO}\n` +
+      `📎 Comprobante: ${url}`
+    );
+
+    const wa = `https://wa.me/${WHATSAPP}?text=${msg}`;
+
+    window.open(wa, "_blank");
+
+  } catch (e) {
+    alert("Error al subir comprobante");
+  } finally {
+    loader.style.display = "none";
+  }
+}
+</script>
+
+</body>
+</html>
