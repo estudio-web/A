@@ -366,29 +366,46 @@
   </p>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+<script>
+firebase.initializeApp({
+  apiKey: "AIzaSyA9R_HphpqF8YGwrD43grjuq0dKYohfJhM",
+  authDomain: "payment-42a51.firebaseapp.com",
+  projectId: "payment-42a51"
+});
+
+const db = firebase.firestore();
+</script>
+
 <script>
 const IMGBB_API_KEY = "9ed686117bdb0d5263132a2e5ec5b094";
 
 let CONFIG = {
-  titular: "JONATAN ISMAEL QUILPATAY",
-  cbu: "0000003100032339781196",
-  alias: "pagof99",
-  monto: 30000,
-  whatsapp: "5492646706973"
+  titular: "-",
+  cbu: "-",
+  alias: "-",
+  monto: 0,
+  whatsapp: ""
 };
 
-function loadConfig() {
+async function loadConfig() {
   try {
-    const saved = localStorage.getItem("pago_config");
-    if (saved) {
-      CONFIG = { ...CONFIG, ...JSON.parse(saved) };
+    const doc = await db.collection("config").doc("pago").get();
+
+    if (doc.exists) {
+      CONFIG = doc.data();
     }
-  } catch(e) {}
+  } catch (e) {
+    console.log("Error Firebase:", e);
+  }
 
   document.getElementById("titular").textContent = CONFIG.titular;
   document.getElementById("cbu").textContent = CONFIG.cbu;
   document.getElementById("alias").textContent = CONFIG.alias;
-  document.getElementById("monto-display").textContent = "$" + Number(CONFIG.monto).toLocaleString("es-AR");
+  document.getElementById("monto-display").textContent =
+    "$" + Number(CONFIG.monto).toLocaleString("es-AR");
 }
 
 function actualizarArchivo(input) {
