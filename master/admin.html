@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -529,6 +528,272 @@
     0%   { background-position: 200% 0; }
     100% { background-position: -200% 0; }
   }
+
+  /* ── SEARCH BAR ── */
+  .search-wrap {
+    position: relative;
+    flex: 1;
+    max-width: 260px;
+  }
+  .search-wrap svg {
+    position: absolute;
+    left: 10px; top: 50%;
+    transform: translateY(-50%);
+    width: 14px; height: 14px;
+    fill: var(--text3);
+    pointer-events: none;
+  }
+  .search-input {
+    width: 100%;
+    padding: 6px 12px 6px 32px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    outline: none;
+    transition: border-color .15s;
+  }
+  .search-input:focus { border-color: var(--accent); }
+  .search-input::placeholder { color: var(--text3); }
+
+  /* ── CARD LINK ROW ── */
+  .card-link-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 7px 10px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .card-link-text {
+    flex: 1;
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    color: var(--text3);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .btn-icon {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 8px;
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    background: var(--surface3);
+    color: var(--text2);
+    cursor: pointer;
+    transition: all .15s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .btn-icon:hover { background: var(--border2); color: var(--text); }
+
+  /* ── DETAIL MODAL ── */
+  .detail-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(4, 8, 16, 0.88);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 500;
+    backdrop-filter: blur(6px);
+  }
+  .detail-modal-backdrop.open { display: flex; }
+  .detail-modal-box {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 18px;
+    padding: 28px;
+    width: 90%;
+    max-width: 480px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 40px 80px rgba(0,0,0,.6);
+  }
+  .detail-modal-box h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+    letter-spacing: -0.3px;
+  }
+  .detail-modal-box .dm-sub {
+    font-size: 12px;
+    color: var(--text3);
+    margin-bottom: 20px;
+  }
+  .dm-section {
+    margin-bottom: 18px;
+  }
+  .dm-section-title {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  .dm-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .dm-field {
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+  .dm-field.full { grid-column: 1 / -1; }
+  .dm-field label {
+    display: block;
+    font-size: 10px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 5px;
+  }
+  .dm-field input, .dm-field select {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border2);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    outline: none;
+    padding: 2px 0 4px;
+    transition: border-color .15s;
+  }
+  .dm-field input:focus, .dm-field select:focus { border-color: var(--accent); }
+  .dm-field input[readonly] { color: var(--text3); cursor: default; }
+  .dm-field select { font-family: 'DM Sans', sans-serif; }
+  .dm-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 20px;
+  }
+  .btn-dm-save {
+    flex: 1;
+    padding: 9px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .btn-dm-save:hover { background: #2563eb; }
+  .btn-dm-cancel {
+    padding: 9px 16px;
+    background: transparent;
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .btn-dm-cancel:hover { background: var(--surface2); color: var(--text); }
+
+  /* ── LINK MODAL ── */
+  .link-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(4, 8, 16, 0.88);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 500;
+    backdrop-filter: blur(6px);
+  }
+  .link-modal-backdrop.open { display: flex; }
+  .link-modal-box {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 18px;
+    padding: 28px;
+    width: 90%;
+    max-width: 420px;
+    box-shadow: 0 40px 80px rgba(0,0,0,.6);
+    text-align: center;
+  }
+  .link-modal-box h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .link-modal-box .lm-sub {
+    font-size: 12px;
+    color: var(--text3);
+    margin-bottom: 20px;
+  }
+  .lm-url-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+  .lm-url-input {
+    flex: 1;
+    padding: 9px 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text2);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    outline: none;
+  }
+  .lm-qr {
+    display: flex;
+    justify-content: center;
+    margin: 12px 0 18px;
+  }
+  .lm-qr img { border-radius: 10px; border: 1px solid var(--border2); }
+  .lm-btns {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .lm-btns .btn-icon {
+    flex: 1;
+    padding: 8px 10px;
+    font-size: 12px;
+    text-align: center;
+  }
+
+  /* ── TOAST ── */
+  #masterToast {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    background: var(--surface3);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    font-size: 13px;
+    padding: 10px 18px;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.4);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity .25s, transform .25s;
+    pointer-events: none;
+    z-index: 9999;
+  }
+  #masterToast.show { opacity: 1; transform: translateY(0); }
 </style>
 </head>
 <body>
@@ -576,7 +841,11 @@
 <main class="main">
   <div class="section-header">
     <span class="section-title">Administradores</span>
-    <div style="display:flex;gap:12px;align-items:center;">
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        <input class="search-input" id="searchInput" type="text" placeholder="Buscar negocio..." oninput="renderGrid()">
+      </div>
       <span class="section-count" id="gridCount"></span>
       <div class="filter-tabs">
         <button class="filter-tab active" onclick="setFilter('todos',this)">Todos</button>
@@ -587,6 +856,88 @@
   </div>
   <div id="grid" class="grid"></div>
 </main>
+
+<!-- DETAIL / EDIT MODAL -->
+<div id="detailModal" class="detail-modal-backdrop">
+  <div class="detail-modal-box">
+    <h3 id="dm-title">Detalle del negocio</h3>
+    <div class="dm-sub" id="dm-id"></div>
+
+    <div class="dm-section">
+      <div class="dm-section-title">Información general</div>
+      <div class="dm-grid">
+        <div class="dm-field">
+          <label>Nombre</label>
+          <input type="text" id="dm-nombre" />
+        </div>
+        <div class="dm-field">
+          <label>Email</label>
+          <input type="email" id="dm-email" />
+        </div>
+        <div class="dm-field">
+          <label>Teléfono</label>
+          <input type="text" id="dm-telefono" />
+        </div>
+        <div class="dm-field">
+          <label>Dirección</label>
+          <input type="text" id="dm-direccion" />
+        </div>
+        <div class="dm-field">
+          <label>Plan</label>
+          <select id="dm-plan">
+            <option value="Estándar">Estándar</option>
+            <option value="Pro">Pro</option>
+            <option value="Premium">Premium</option>
+          </select>
+        </div>
+        <div class="dm-field">
+          <label>Rubro</label>
+          <input type="text" id="dm-rubro" placeholder="ej: panadería" />
+        </div>
+        <div class="dm-field full">
+          <label>Owner ID (Firebase UID)</label>
+          <input type="text" id="dm-ownerid" readonly />
+        </div>
+      </div>
+    </div>
+
+    <div class="dm-section">
+      <div class="dm-section-title">Link de tienda</div>
+      <div class="dm-grid">
+        <div class="dm-field full">
+          <label>URL pública</label>
+          <input type="text" id="dm-storeurl" readonly />
+        </div>
+      </div>
+    </div>
+
+    <div class="dm-actions">
+      <button class="btn-dm-cancel" onclick="closeDetailModal()">Cancelar</button>
+      <button class="btn-dm-save" onclick="saveDetail()">💾 Guardar cambios</button>
+    </div>
+  </div>
+</div>
+
+<!-- LINK MODAL -->
+<div id="linkModal" class="link-modal-backdrop">
+  <div class="link-modal-box">
+    <h3 id="lm-nombre">Tienda</h3>
+    <div class="lm-sub">Compartí este enlace con tus clientes</div>
+    <div class="lm-url-row">
+      <input class="lm-url-input" id="lm-url" readonly />
+      <button class="btn-icon" onclick="copyLinkModal()">📋 Copiar</button>
+    </div>
+    <div class="lm-qr" id="lm-qr"></div>
+    <div class="lm-btns">
+      <button class="btn-icon" onclick="openLinkModal()">↗ Abrir</button>
+      <button class="btn-icon" onclick="shareLinkWhatsapp()">📱 WhatsApp</button>
+      <button class="btn-icon" onclick="closeLinkModal()">✕ Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="masterToast"></div>
 
 <!-- LOGIN MODAL -->
 <div id="loginModal" class="modal-backdrop">
