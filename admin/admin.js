@@ -136,13 +136,14 @@ if (PAGE_IS_DASH) {
 
     // Cargar nombre del negocio en sidebar
     try {
-      const negSnap = await getDoc(doc(db, 'negocios', admin.negocioId));
-      if (negSnap.exists()) {
-        const n = negSnap.data().nombre || 'Mi Panadería';
-        $('#sidebar-negocio-name').textContent = n;
-        document.title = `Admin — ${n}`;
-      }
-    } catch (_) {}
+  const negSnap = await getDoc(doc(db, 'negocios', admin.negocioId));
+  if (negSnap.exists()) {
+    admin.negocio = negSnap.data();
+    const n = admin.negocio.nombre || 'Mi Panadería';
+    $('#sidebar-negocio-name').textContent = n;
+    document.title = `Admin — ${n}`;
+  }
+} catch (_) {}
 
     await initDashboard();
     hideLoader();
@@ -194,6 +195,7 @@ if (PAGE_IS_DASH) {
     setupProductoModal();
     setupPromoModal();
     setupFiltroEstado();
+    setupShareModal();
   }
 
   // ── STATS ──────────────────────────────────────────────── //
@@ -667,5 +669,52 @@ async function subirImagenImgBB(file) {
       btn.disabled = false; btn.textContent = 'Guardar';
     }
   }
+
+  // ── Compartir tienda ───────────────────────────────────── //
+function buildStoreURL() {
+  // Ajustá la ruta si tu "public/index.html" está en otro lado
+  const base = window.location.origin +
+    window.location.pathname.replace(/admin\/.*$/, 'public/index.html');
+  return `${base}?n=${admin.negocioId}`;
+}
+
+function setupShareModal() {
+  const modal   = $('#modal-share');
+  const input   = $('#share-link');
+  const qrBox   = $('#share-qr');
+
+  const open = () => {
+    const url = buildStoreURL();
+    input.value = url;
+    qrBox.innerHTML =
+      `<img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(url)}" alt="QR tienda" />`;
+    modal.classList.remove('hidden');
+  };
+  const close = () => modal.classList.add('hidden');
+
+  $('#btn-share-store').addEventListener('click', open);
+  $('#overlay-share').addEventListener('click', close);
+  $('#btn-close-share').addEventListener('click', close);
+
+  $('#btn-copy-link').addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(input.value);
+      showToast('Enlace copiado ✅', 'success');
+    } catch {
+      input.select(); document.execCommand('copy');
+      showToast('Enlace copiado', 'success');
+    }
+  });
+
+  $('#btn-share-open').addEventListener('click', () => {
+    window.open(input.value, '_blank');
+  });
+
+  $('#btn-share-whatsapp').addEventListener('click', () => {
+    const nombre = admin.negocio?.nombre || 'nuestra tienda';
+    const msg = `¡Hola! 👋 Hacé tus pedidos en ${nombre} desde acá: ${input.value}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+  });
+}
 
 } // end if PAGE_IS_DASH
