@@ -37,6 +37,75 @@
   --font-body:   'Outfit', system-ui, sans-serif;
 }
 
+/* ── Pedidos colapsables ─────────────────────────────────── */
+.pedido-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: .6rem;
+  overflow: hidden;
+  transition: box-shadow .2s;
+}
+.pedido-card:hover { box-shadow: 0 2px 10px rgba(0,0,0,.07); }
+
+.pedido-row-main {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: .75rem 1rem;
+  flex-wrap: wrap;
+}
+.pedido-nombre {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  flex: 1;
+  min-width: 140px;
+}
+.pedido-fecha {
+  font-size: .78rem;
+  color: var(--brown-light);
+  white-space: nowrap;
+}
+.btn-ver-info {
+  background: none;
+  border: 1.5px solid var(--border);
+  border-radius: 7px;
+  padding: .3rem .65rem;
+  font-size: .78rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--brown);
+  transition: background .15s;
+  white-space: nowrap;
+}
+.btn-ver-info:hover { background: var(--bg); }
+
+.pedido-detalle {
+  border-top: 1px solid var(--border);
+  padding: .75rem 1rem;
+  background: var(--bg);
+}
+.pedido-detalle-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .4rem .75rem;
+  margin-bottom: .6rem;
+  font-size: .83rem;
+}
+.det-full { grid-column: 1 / -1; }
+.det-label {
+  display: block;
+  font-size: .72rem;
+  color: var(--brown-light);
+  margin-bottom: 2px;
+}
+.pedido-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  margin-top: .4rem;
+}
 
 
 
