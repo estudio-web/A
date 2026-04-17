@@ -8,7 +8,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="styles.css" />
 </head>
+
+
 <body class="dash-body">
+  
 
 <div id="toast-container" aria-live="polite"></div>
 
@@ -37,15 +40,49 @@
   </div>
 </nav>
 
+
+
 <!-- ── Main wrapper ─────────────────────────────────────────── -->
 <div id="main-wrapper">
 
   <!-- Topbar mobile -->
-  <header id="topbar">
-    <button id="menu-toggle" aria-label="Menú">☰</button>
-    <span id="topbar-title">Dashboard</span>
+ <header id="topbar">
+  <button id="menu-toggle" aria-label="Menú">☰</button>
+  <span id="topbar-title">Dashboard</span>
+  <div style="margin-left:auto;display:flex;gap:.5rem;align-items:center">
+    <button id="btn-share-store" class="btn-action" style="padding:.45rem .75rem;font-size:.8rem">
+      🔗 Compartir tienda
+    </button>
     <span id="topbar-user"></span>
-  </header>
+  </div>
+</header>
+
+<!-- ── Modal: Compartir tienda ─────────────────────────── -->
+<div id="modal-share" class="hidden">
+  <div class="modal-overlay" id="overlay-share"></div>
+  <div class="modal-content" style="max-width:480px">
+    <h2>🔗 Compartir tu tienda</h2>
+    <p style="font-size:.85rem;color:var(--brown-light);margin-bottom:.8rem">
+      Enviá este enlace a tus clientes para que hagan pedidos online.
+    </p>
+
+    <div class="form-group">
+      <label>Enlace público</label>
+      <div style="display:flex;gap:.4rem">
+        <input type="text" id="share-link" readonly style="flex:1" />
+        <button type="button" class="btn-save" id="btn-copy-link" style="padding:.5rem .8rem">📋</button>
+      </div>
+    </div>
+
+    <div id="share-qr" style="display:flex;justify-content:center;margin:1rem 0"></div>
+
+    <div class="modal-actions" style="flex-wrap:wrap;gap:.5rem">
+      <button type="button" class="btn-cancel" id="btn-share-whatsapp">📱 WhatsApp</button>
+      <button type="button" class="btn-cancel" id="btn-share-open">↗ Abrir tienda</button>
+      <button type="button" class="btn-save"   id="btn-close-share">Cerrar</button>
+    </div>
+  </div>
+</div>
 
   <!-- ── SECCIÓN: Dashboard ─────────────────────────────────── -->
   <section class="dash-section" id="section-dashboard">
@@ -210,6 +247,8 @@
     </div>
   </section>
 
+
+  
 </div><!-- #main-wrapper -->
 
 <script type="module" src="admin.js"></script>
