@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema para Panaderías — Revendedores</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #fdf8f2;
+  --warm-white: #fffcf8;
+  --amber: #e8870a;
+  --amber-light: #fdecd0;
+  --amber-dark: #b86208;
+  --brown: #2d1a08;
+  --brown-mid: #5c3d1e;
+  --brown-light: #9b6b3c;
+  --gray-soft: #f0ebe3;
+  --gray-border: #e2d9cc;
+  --green-wa: #25D366;
+  --green-wa-dark: #1da851;
+  --text-primary: #1c1007;
+  --text-secondary: #6b5040;
+  --text-muted: #9b8170;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-xl: 32px;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--text-primary);
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+/* ──────────── NOISE TEXTURE OVERLAY ──────────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ──────────── NAV ──────────── */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(253,248,242,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--gray-border);
+  padding: 0 5%;
+}
+.nav-inner {
+  max-width: 1100px; margin: auto;
+  display: flex; align-items: center;
+  justify-content: space-between;
+  height: 60px;
+}
+.nav-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem; font-weight: 700;
+  color: var(--amber-dark);
+  text-decoration: none;
+  display: flex; align-items: center; gap: 8px;
+}
+.nav-logo span { font-size: 1.3rem; }
+.nav-links { display: flex; gap: 28px; list-style: none; }
+.nav-links a {
+  font-size: 0.88rem; font-weight: 400;
+  color: var(--text-secondary);
+  text-decoration: none;
+  letter-spacing: 0.01em;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--amber); }
+.nav-cta {
+  background: var(--amber); color: white;
+  padding: 9px 20px; border-radius: var(--radius-sm);
+  font-size: 0.85rem; font-weight: 500;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+  white-space: nowrap;
+}
+.nav-cta:hover { background: var(--amber-dark); transform: translateY(-1px); }
+.hamburger { display: none; cursor: pointer; flex-direction: column; gap: 5px; }
+.hamburger span { width: 24px; height: 2px; background: var(--brown); border-radius: 2px; transition: all 0.3s; }
+
+/* ──────────── HERO ──────────── */
+.hero {
+  min-height: 92vh;
+  padding: 80px 5% 60px;
+  display: flex; align-items: center;
+  position: relative; overflow: hidden;
+}
+.hero-bg-circle {
+  position: absolute;
+  width: 700px; height: 700px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fdecd0 0%, transparent 70%);
+  top: -200px; right: -200px;
+  pointer-events: none;
+}
+.hero-inner {
+  max-width: 1100px; margin: auto; width: 100%;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+  position: relative; z-index: 1;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--amber-light); color: var(--amber-dark);
+  border: 1px solid #f0c878; border-radius: 100px;
+  padding: 6px 16px; font-size: 0.8rem; font-weight: 500;
+  margin-bottom: 28px; letter-spacing: 0.03em;
+}
+.hero-badge-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--amber);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.4); }
+}
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.4rem, 5vw, 3.8rem);
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--brown);
+  margin-bottom: 20px;
+}
+.hero h1 em {
+  font-style: italic;
+  color: var(--amber);
+}
+.hero-sub {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  max-width: 440px;
+  margin-bottom: 36px;
+  font-weight: 300;
+  line-height: 1.7;
+}
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--amber); color: white;
+  padding: 14px 28px; border-radius: var(--radius-sm);
+  font-size: 0.95rem; font-weight: 500;
+  text-decoration: none; border: none; cursor: pointer;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px rgba(232,135,10,0.3);
+}
+.btn-primary:hover {
+  background: var(--amber-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(232,135,10,0.35);
+}
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: transparent; color: var(--text-secondary);
+  padding: 14px 24px; border-radius: var(--radius-sm);
+  font-size: 0.95rem; font-weight: 400;
+  text-decoration: none; border: 1.5px solid var(--gray-border);
+  transition: all 0.2s; cursor: pointer;
+}
+.btn-secondary:hover {
+  border-color: var(--amber);
+  color: var(--amber);
+  background: var(--amber-light);
+}
+.btn-whatsapp {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--green-wa); color: white;
+  padding: 14px 28px; border-radius: var(--radius-sm);
+  font-size: 0.95rem; font-weight: 500;
+  text-decoration: none; border: none; cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+.btn-whatsapp:hover { background: var(--green-wa-dark); transform: translateY(-2px); }
+.hero-stats {
+  display: flex; gap: 32px; margin-top: 48px;
+  padding-top: 32px; border-top: 1px solid var(--gray-border);
+}
+.stat-item { text-align: left; }
+.stat-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem; font-weight: 700;
+  color: var(--brown); line-height: 1;
+}
+.stat-label { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; }
+
+/* ──────────── HERO VISUAL PANEL ──────────── */
+.hero-visual {
+  display: flex; flex-direction: column; gap: 14px;
+  position: relative;
+}
+.mock-phone {
+  width: 240px; margin: 0 auto;
+  background: white;
+  border-radius: 28px;
+  border: 2px solid var(--gray-border);
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(45,26,8,0.15);
+}
+.mock-phone-bar {
+  background: var(--amber);
+  padding: 14px 16px 10px;
+  display: flex; align-items: center; gap: 10px;
+}
+.mock-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem; font-weight: 600; color: white;
+}
+.mock-biz-name { font-size: 0.85rem; font-weight: 500; color: white; }
+.mock-biz-sub { font-size: 0.68rem; color: rgba(255,255,255,0.75); }
+.mock-products {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+  padding: 12px;
+}
+.mock-product {
+  background: var(--cream); border-radius: 10px;
+  overflow: hidden; text-align: center;
+}
+.mock-product-img {
+  height: 58px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem;
+}
+.mock-product-name { font-size: 0.63rem; font-weight: 500; padding: 4px 6px; color: var(--brown); }
+.mock-product-price { font-size: 0.7rem; color: var(--amber); font-weight: 600; padding: 0 6px 6px; }
+.mock-cta-btn {
+  margin: 4px 12px 12px;
+  background: var(--green-wa);
+  color: white; border: none;
+  border-radius: 8px; padding: 10px;
+  font-size: 0.75rem; font-weight: 500;
+  width: calc(100% - 24px); cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+}
+.floating-card {
+  position: absolute;
+  background: white; border-radius: var(--radius-md);
+  border: 1px solid var(--gray-border);
+  padding: 12px 16px;
+  box-shadow: 0 8px 30px rgba(45,26,8,0.1);
+  font-size: 0.78rem;
+}
+.floating-card.right {
+  right: -10px; top: 20px;
+}
+.floating-card.left {
+  left: -10px; bottom: 60px;
+}
+.fc-label { color: var(--text-muted); font-size: 0.7rem; margin-bottom: 3px; }
+.fc-value { font-weight: 500; color: var(--text-primary); }
+.fc-green { color: var(--green-wa-dark); font-weight: 600; }
+
+/* ──────────── SECTION BASE ──────────── */
+.section { padding: 90px 5%; position: relative; z-index: 1; }
+.section-inner { max-width: 1100px; margin: auto; }
+.section-label {
+  display: inline-block;
+  font-size: 0.75rem; font-weight: 500; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--amber);
+  margin-bottom: 14px;
+}
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  font-weight: 700; line-height: 1.2;
+  color: var(--brown); margin-bottom: 16px;
+  letter-spacing: -0.01em;
+}
+.section-sub {
+  font-size: 1rem; color: var(--text-secondary);
+  max-width: 540px; line-height: 1.7;
+  font-weight: 300;
+}
+.divider { height: 1px; background: var(--gray-border); margin: 0 5%; }
+
+/* ──────────── HOW IT WORKS ──────────── */
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px; margin-top: 52px;
+}
+.step-card {
+  background: white; border: 1px solid var(--gray-border);
+  border-radius: var(--radius-lg); padding: 30px 24px;
+  position: relative; overflow: hidden;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+.step-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(45,26,8,0.1);
+}
+.step-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 3.5rem; font-weight: 900;
+  color: var(--amber-light); line-height: 1;
+  margin-bottom: 16px;
+}
+.step-icon { font-size: 1.6rem; margin-bottom: 10px; }
+.step-title { font-size: 1rem; font-weight: 500; color: var(--brown); margin-bottom: 8px; }
+.step-desc { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; }
+.step-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--amber);
+  transform: scaleX(0);
+  transition: transform 0.25s;
+}
+.step-card:hover::after { transform: scaleX(1); }
+
+/* ──────────── BENEFITS ──────────── */
+.benefits-section { background: var(--brown); }
+.benefits-section .section-title { color: var(--cream); }
+.benefits-section .section-label { color: #f0c878; }
+.benefits-section .section-sub { color: rgba(253,248,242,0.65); }
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 2px; margin-top: 52px;
+  border: 2px solid rgba(255,255,255,0.06);
+  border-radius: var(--radius-lg); overflow: hidden;
+}
+.benefit-item {
+  padding: 32px 28px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  transition: background 0.25s;
+}
+.benefit-item:hover { background: rgba(255,255,255,0.08); }
+.benefit-icon {
+  width: 44px; height: 44px;
+  background: rgba(232,135,10,0.15);
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; margin-bottom: 18px;
+}
+.benefit-title { font-size: 1rem; font-weight: 500; color: var(--cream); margin-bottom: 8px; }
+.benefit-desc { font-size: 0.85rem; color: rgba(253,248,242,0.55); line-height: 1.6; }
+
+/* ──────────── EARNINGS ──────────── */
+.earnings-wrapper {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 60px; align-items: center;
+  margin-top: 52px;
+}
+.earnings-card {
+  background: white; border: 1px solid var(--gray-border);
+  border-radius: var(--radius-xl); padding: 36px;
+  position: relative; overflow: hidden;
+}
+.earnings-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, var(--amber), #f0c878);
+}
+.earnings-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px 0; border-bottom: 1px solid var(--gray-soft);
+}
+.earnings-row:last-child { border-bottom: none; }
+.er-label { font-size: 0.9rem; color: var(--text-secondary); }
+.er-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem; font-weight: 700; color: var(--brown);
+}
+.er-val.big { font-size: 2rem; color: var(--amber); }
+.earnings-points { list-style: none; display: flex; flex-direction: column; gap: 18px; }
+.ep-item { display: flex; gap: 16px; align-items: flex-start; }
+.ep-icon {
+  width: 40px; height: 40px; flex-shrink: 0;
+  background: var(--amber-light); border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+}
+.ep-title { font-size: 0.95rem; font-weight: 500; color: var(--brown); margin-bottom: 3px; }
+.ep-desc { font-size: 0.83rem; color: var(--text-muted); line-height: 1.5; }
+
+/* ──────────── SCRIPTS / SALES ──────────── */
+.scripts-section { background: var(--gray-soft); }
+.scripts-tabs {
+  display: flex; gap: 10px; flex-wrap: wrap;
+  margin: 36px 0 24px;
+}
+.tab-btn {
+  padding: 8px 18px; border-radius: 100px;
+  border: 1.5px solid var(--gray-border);
+  background: white; cursor: pointer;
+  font-size: 0.83rem; font-weight: 400;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+.tab-btn.active {
+  background: var(--amber); border-color: var(--amber);
+  color: white; font-weight: 500;
+}
+.script-box {
+  background: white; border: 1px solid var(--gray-border);
+  border-radius: var(--radius-lg); padding: 28px 32px;
+  position: relative;
+}
+.script-box.hidden { display: none; }
+.script-quote {
+  font-size: 1rem; color: var(--text-secondary); line-height: 1.75;
+  font-style: italic; font-weight: 300;
+  border-left: 3px solid var(--amber);
+  padding-left: 20px;
+}
+.copy-btn {
+  position: absolute; top: 20px; right: 20px;
+  background: var(--gray-soft); border: 1px solid var(--gray-border);
+  border-radius: var(--radius-sm);
+  padding: 6px 14px; font-size: 0.77rem;
+  cursor: pointer; font-family: 'DM Sans', sans-serif;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+}
+.copy-btn:hover { background: var(--amber); color: white; border-color: var(--amber); }
+
+/* ──────────── TARGETS ──────────── */
+.targets-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px; margin-top: 48px;
+}
+.target-card {
+  background: white; border: 1px solid var(--gray-border);
+  border-radius: var(--radius-lg); padding: 24px 20px;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  cursor: default;
+}
+.target-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(45,26,8,0.08);
+  border-color: var(--amber);
+}
+.target-emoji { font-size: 2.2rem; margin-bottom: 12px; }
+.target-name { font-size: 0.92rem; font-weight: 500; color: var(--brown); }
+.target-desc { font-size: 0.78rem; color: var(--text-muted); margin-top: 5px; }
+
+/* ──────────── FAQ ──────────── */
+.faq-list { display: flex; flex-direction: column; gap: 10px; margin-top: 48px; }
+.faq-item {
+  background: white; border: 1px solid var(--gray-border);
+  border-radius: var(--radius-md); overflow: hidden;
+}
+.faq-btn {
+  width: 100%; padding: 20px 24px;
+  display: flex; justify-content: space-between; align-items: center;
+  background: none; border: none; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 500;
+  color: var(--text-primary); text-align: left;
+  transition: background 0.2s;
+}
+.faq-btn:hover { background: var(--gray-soft); }
+.faq-arrow {
+  width: 22px; height: 22px; flex-shrink: 0;
+  border-radius: 50%; background: var(--gray-soft);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; color: var(--amber);
+  transition: transform 0.3s, background 0.2s;
+}
+.faq-item.open .faq-arrow { transform: rotate(180deg); background: var(--amber-light); }
+.faq-answer {
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.3s;
+  padding: 0 24px;
+  font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;
+}
+.faq-item.open .faq-answer { max-height: 300px; padding: 0 24px 20px; }
+
+/* ──────────── PROCESS ──────────── */
+.process-track {
+  display: flex; align-items: center; gap: 0;
+  margin-top: 52px; flex-wrap: wrap;
+}
+.process-step {
+  flex: 1; min-width: 140px;
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center; position: relative;
+}
+.ps-circle {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: var(--amber-light); border: 2px solid var(--amber);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; margin-bottom: 14px; position: relative; z-index: 1;
+}
+.ps-title { font-size: 0.85rem; font-weight: 500; color: var(--brown); }
+.ps-desc { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; max-width: 120px; }
+.process-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 26px; left: calc(50% + 26px);
+  width: calc(100% - 52px);
+  height: 2px;
+  background: repeating-linear-gradient(90deg, var(--amber) 0, var(--amber) 6px, transparent 6px, transparent 14px);
+}
+
+/* ──────────── CTA FINAL ──────────── */
+.cta-section {
+  background: var(--brown); padding: 100px 5%;
+  text-align: center; position: relative; overflow: hidden;
+}
+.cta-bg {
+  position: absolute; width: 600px; height: 600px;
+  border-radius: 50%; background: radial-gradient(circle, rgba(232,135,10,0.12) 0%, transparent 70%);
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.cta-section .section-title { color: var(--cream); text-align: center; max-width: 600px; margin: 0 auto 16px; }
+.cta-section .section-sub { color: rgba(253,248,242,0.55); text-align: center; max-width: 480px; margin: 0 auto 40px; }
+.cta-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+/* ──────────── FOOTER ──────────── */
+footer {
+  background: #1c1007; padding: 36px 5%;
+  text-align: center;
+  font-size: 0.8rem; color: rgba(253,248,242,0.3);
+}
+
+/* ──────────── SCROLL REVEAL ──────────── */
+.reveal {
+  opacity: 0; transform: translateY(28px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ──────────── RESPONSIVE ──────────── */
+@media (max-width: 900px) {
+  .hero-inner { grid-template-columns: 1fr; gap: 50px; }
+  .hero-visual { order: -1; }
+  .mock-phone { width: 200px; }
+  .floating-card { display: none; }
+  .earnings-wrapper { grid-template-columns: 1fr; }
+  .process-step:not(:last-child)::after { display: none; }
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+}
+@media (max-width: 600px) {
+  .hero { padding: 60px 5% 40px; }
+  .hero-stats { gap: 20px; flex-wrap: wrap; }
+  .scripts-tabs { gap: 8px; }
+  .btn-primary, .btn-whatsapp, .btn-secondary { font-size: 0.88rem; padding: 12px 20px; }
+}
+
+/* ──────────── MOBILE MENU ──────────── */
+.mobile-menu {
+  display: none; position: fixed; inset: 0;
+  background: rgba(28,16,7,0.95); backdrop-filter: blur(10px);
+  z-index: 200; flex-direction: column; align-items: center; justify-content: center;
+  gap: 28px;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu a {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem; font-weight: 700; color: var(--cream);
+  text-decoration: none; transition: color 0.2s;
+}
+.mobile-menu a:hover { color: var(--amber); }
+.mobile-close {
+  position: absolute; top: 20px; right: 24px;
+  background: none; border: none; font-size: 1.8rem;
+  color: var(--cream); cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo"><span>🍞</span> PanaderiaSystem</a>
+    <ul class="nav-links">
+      <li><a href="#como-funciona">Cómo funciona</a></li>
+      <li><a href="#ganancias">Ganancias</a></li>
+      <li><a href="#scripts">Scripts</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <a href="https://wa.me/542646706973?text=Hola,%20tengo%20un%20cliente%20listo%20para%20activar" class="nav-cta">Activar cliente →</a>
+    <div class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" id="menuClose">✕</button>
+  <a href="#como-funciona" class="menu-link">Cómo funciona</a>
+  <a href="#ganancias" class="menu-link">Ganancias</a>
+  <a href="#scripts" class="menu-link">Scripts</a>
+  <a href="#faq" class="menu-link">FAQ</a>
+  <a href="https://wa.me/542646706973?text=Hola,%20tengo%20un%20cliente%20listo%20para%20activar" style="color: var(--amber) !important; font-size: 1.3rem;">Activar cliente →</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-circle"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        Programa de revendedores activo
+      </div>
+      <h1>Vendé el sistema que <em>transforma</em> panaderías</h1>
+      <p class="hero-sub">Tus clientes muestran productos y reciben pedidos por WhatsApp. Vos conseguís el cliente y cobrás comisión. Nosotros hacemos el resto.</p>
+      <div class="hero-actions">
+        <a href="#como-funciona" class="btn-primary">Ver cómo funciona ↓</a>
+        <a href="https://wa.me/542646706973?text=Hola,%20tengo%20un%20cliente%20listo%20para%20activar" class="btn-whatsapp">💬 Activar cliente</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-num">$0</div>
+          <div class="stat-label">Inversión inicial</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">100%</div>
+          <div class="stat-label">Técnico a cargo nuestro</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">∞</div>
+          <div class="stat-label">Clientes posibles</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="mock-phone">
+        <div class="mock-phone-bar">
+          <div class="mock-avatar">P</div>
+          <div>
+            <div class="mock-biz-name">Panadería El Trigo</div>
+            <div class="mock-biz-sub">Catálogo digital</div>
+          </div>
+        </div>
+        <div class="mock-products">
+          <div class="mock-product">
+            <div class="mock-product-img">🥐</div>
+            <div class="mock-product-name">Medialuna</div>
+            <div class="mock-product-price">$350</div>
+          </div>
+          <div class="mock-product">
+            <div class="mock-product-img">🍞</div>
+            <div class="mock-product-name">Pan francés</div>
+            <div class="mock-product-price">$180</div>
+          </div>
+          <div class="mock-product">
+            <div class="mock-product-img">🎂</div>
+            <div class="mock-product-name">Torta casera</div>
+            <div class="mock-product-price">$2.800</div>
+          </div>
+          <div class="mock-product">
+            <div class="mock-product-img">🥖</div>
+            <div class="mock-product-name">Baguette</div>
+            <div class="mock-product-price">$420</div>
+          </div>
+        </div>
+        <button class="mock-cta-btn">📲 Hacer pedido por WhatsApp</button>
+      </div>
+      <div class="floating-card right">
+        <div class="fc-label">Nuevo pedido</div>
+        <div class="fc-value">2x Medialuna, 1x Torta</div>
+        <div class="fc-green">✓ Enviado por WhatsApp</div>
+      </div>
+      <div class="floating-card left">
+        <div class="fc-label">Tu comisión</div>
+        <div class="fc-value fc-green">+$XXXX / cliente</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CÓMO FUNCIONA -->
+<section class="section" id="como-funciona">
+  <div class="section-inner">
+    <div class="reveal">
+      <span class="section-label">Proceso</span>
+      <h2 class="section-title">Del primer mensaje a la comisión cobrada</h2>
+      <p class="section-sub">Cuatro pasos simples. No necesitás saber de tecnología, diseño, ni desarrollo web.</p>
+    </div>
+
+    <div class="process-track reveal">
+      <div class="process-step">
+        <div class="ps-circle">🎯</div>
+        <div class="ps-title">Identificás el cliente</div>
+        <div class="ps-desc">Panadería, rotisería o local de comida</div>
+      </div>
+      <div class="process-step">
+        <div class="ps-circle">💬</div>
+        <div class="ps-title">Mostrás el sistema</div>
+        <div class="ps-desc">Con el material que te damos</div>
+      </div>
+      <div class="process-step">
+        <div class="ps-circle">💳</div>
+        <div class="ps-title">Cliente paga</div>
+        <div class="ps-desc">Enviás el link de pago</div>
+      </div>
+      <div class="process-step">
+        <div class="ps-circle">💰</div>
+        <div class="ps-title">Cobrás tu comisión</div>
+        <div class="ps-desc">Directo a tu cuenta</div>
+      </div>
+    </div>
+
+    <div class="steps-grid" style="margin-top: 60px;">
+      <div class="step-card reveal">
+        <div class="step-num">01</div>
+        <div class="step-icon">🏪</div>
+        <div class="step-title">¿A quién ofrecerlo?</div>
+        <div class="step-desc">Cualquier negocio que venda por WhatsApp: panaderías, rotiserías, viandas, casas de comida. Si tiene clientes que piden por mensaje, lo necesita.</div>
+      </div>
+      <div class="step-card reveal">
+        <div class="step-num">02</div>
+        <div class="step-icon">🎯</div>
+        <div class="step-title">Qué problema resuelve</div>
+        <div class="step-desc">Muchos negocios venden sin orden: fotos dispersas, precios explicados manualmente, tiempo perdido. Este sistema ordena y profesionaliza ese proceso.</div>
+      </div>
+      <div class="step-card reveal">
+        <div class="step-num">03</div>
+        <div class="step-icon">⚙️</div>
+        <div class="step-title">¿Y la parte técnica?</div>
+        <div class="step-desc">Completamente a cargo nuestro. Instalación, configuración y puesta en marcha incluidas. El cliente recibe el sistema listo para usar.</div>
+      </div>
+      <div class="step-card reveal">
+        <div class="step-num">04</div>
+        <div class="step-icon">🔁</div>
+        <div class="step-title">Ingresos recurrentes</div>
+        <div class="step-desc">El servicio es mensual. Cada cliente que conseguís puede ser una fuente de ingreso que se renueva. Cuantos más clientes, más facturás.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BENEFICIOS (DARK) -->
+<section class="section benefits-section">
+  <div class="section-inner">
+    <div class="reveal">
+      <span class="section-label">Para el negocio de tu cliente</span>
+      <h2 class="section-title">Lo que lo va a convencer</h2>
+      <p class="section-sub">Estos son los beneficios que más peso tienen al momento de vender. Úsalos en tu conversación.</p>
+    </div>
+    <div class="benefits-grid reveal">
+      <div class="benefit-item">
+        <div class="benefit-icon">📱</div>
+        <div class="benefit-title">Catálogo digital profesional</div>
+        <div class="benefit-desc">Todos los productos con foto, nombre y precio en un solo lugar. Sin mandar fotos sueltas.</div>
+      </div>
+      <div class="benefit-item">
+        <div class="benefit-icon">💬</div>
+        <div class="benefit-title">Pedidos directos por WhatsApp</div>
+        <div class="benefit-desc">El cliente elige del catálogo y el pedido llega ordenado por mensaje. Sin errores, sin idas y vueltas.</div>
+      </div>
+      <div class="benefit-item">
+        <div class="benefit-icon">⏱️</div>
+        <div class="benefit-title">Menos tiempo respondiendo</div>
+        <div class="benefit-desc">No más responder lo mismo mil veces. El catálogo contesta solo las preguntas de precio y disponibilidad.</div>
+      </div>
+      <div class="benefit-item">
+        <div class="benefit-icon">🔥</div>
+        <div class="benefit-title">Promociones destacadas</div>
+        <div class="benefit-desc">Pueden subir ofertas y del día, visibles para todos los clientes que visiten el catálogo.</div>
+      </div>
+      <div class="benefit-item">
+        <div class="benefit-icon">🌟</div>
+        <div class="benefit-title">Imagen más profesional</div>
+        <div class="benefit-desc">Se diferencian de la competencia que sigue vendiendo por fotos de WhatsApp sin orden.</div>
+      </div>
+      <div class="benefit-item">
+        <div class="benefit-icon">📊</div>
+        <div class="benefit-title">Panel de control simple</div>
+        <div class="benefit-desc">Pueden actualizar productos, precios y promociones desde un panel fácil de usar.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GANANCIAS -->
+<section class="section" id="ganancias">
+  <div class="section-inner">
+    <div class="reveal">
+      <span class="section-label">Para vos, como revendedor</span>
+      <h2 class="section-title">Así ganás dinero</h2>
+      <p class="section-sub">Sin inversión, sin parte técnica. Solo conseguís el cliente y nosotros hacemos todo lo demás.</p>
+    </div>
+    <div class="earnings-wrapper">
+      <div class="reveal">
+        <ul class="earnings-points">
+          <li class="ep-item">
+            <div class="ep-icon">💰</div>
+            <div>
+              <div class="ep-title">Comisión por cada activación</div>
+              <div class="ep-desc">Cada vez que un cliente se activa, recibís tu parte. Sin esperas, sin condiciones complicadas.</div>
+            </div>
+          </li>
+          <li class="ep-item">
+            <div class="ep-icon">📅</div>
+            <div>
+              <div class="ep-title">Ingreso mensual recurrente</div>
+              <div class="ep-desc">El servicio se paga cada mes. Cuantos más clientes activos tengas, más cobros mensuales te generan.</div>
+            </div>
+          </li>
+          <li class="ep-item">
+            <div class="ep-icon">📈</div>
+            <div>
+              <div class="ep-title">Sin techo de ingresos</div>
+              <div class="ep-desc">Podés cerrar varios negocios por semana si te enfocás. No hay límite de clientes ni de comisiones.</div>
+            </div>
+          </li>
+          <li class="ep-item">
+            <div class="ep-icon">🛠️</div>
+            <div>
+              <div class="ep-title">Nosotros hacemos todo lo técnico</div>
+              <div class="ep-desc">Instalación, configuración y soporte. Vos solo tenés que conseguir el cliente y avisar.</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="reveal">
+        <div class="earnings-card">
+          <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 20px;">Ejemplo de ingresos</div>
+          <div class="earnings-row">
+            <span class="er-label">1 cliente activo</span>
+            <span class="er-val">Comisión mensual</span>
+          </div>
+          <div class="earnings-row">
+            <span class="er-label">5 clientes activos</span>
+            <span class="er-val">×5 comisiones</span>
+          </div>
+          <div class="earnings-row">
+            <span class="er-label">10 clientes activos</span>
+            <span class="er-val">×10 comisiones</span>
+          </div>
+          <div class="earnings-row">
+            <span class="er-label">Potencial mensual</span>
+            <span class="er-val big">Sin límite</span>
+          </div>
+          <div style="margin-top: 24px; padding: 16px; background: var(--amber-light); border-radius: var(--radius-sm);">
+            <div style="font-size: 0.8rem; color: var(--amber-dark); font-weight: 500;">💡 Tip de revendedores top</div>
+            <div style="font-size: 0.82rem; color: var(--brown-mid); margin-top: 6px; line-height: 1.5;">Enfocarte en zonas con varios locales de comida juntos te permite hacer varios cierres en el mismo recorrido.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- A QUIÉN VENDERLE -->
+<section class="section" style="background: var(--gray-soft);">
+  <div class="section-inner">
+    <div class="reveal">
+      <span class="section-label">Targets ideales</span>
+      <h2 class="section-title">¿A qué negocios ofrecerlo?</h2>
+      <p class="section-sub">Cualquier local que venda productos y reciba pedidos por WhatsApp es un cliente potencial.</p>
+    </div>
+    <div class="targets-grid reveal">
+      <div class="target-card">
+        <div class="target-emoji">🥐</div>
+        <div class="target-name">Panaderías</div>
+        <div class="target-desc">El target principal. Suelen tener muchos productos y clientes frecuentes.</div>
+      </div>
+      <div class="target-card">
+        <div class="target-emoji">🍗</div>
+        <div class="target-name">Rotiserías</div>
+        <div class="target-desc">Menús del día, combos, platos para llevar. Perfecto para el sistema.</div>
+      </div>
+      <div class="target-card">
+        <div class="target-emoji">🥡</div>
+        <div class="target-name">Viandas y comida</div>
+        <div class="target-desc">Negocios de viandas que arman menús semanales por WhatsApp.</div>
+      </div>
+      <div class="target-card">
+        <div class="target-emoji">🍕</div>
+        <div class="target-name">Comida para llevar</div>
+        <div class="target-desc">Cualquier local de take-away que reciba pedidos por mensaje.</div>
+      </div>
+      <div class="target-card">
+        <div class="target-emoji">🎂</div>
+        <div class="target-name">Repostería y pastelería</div>
+        <div class="target-desc">Tortas personalizadas, postres. El catálogo muestra las opciones con foto.</div>
+      </div>
+      <div class="target-card">
+        <div class="target-emoji">🥩</div>
+        <div class="target-name">Carnicerías y almacenes</div>
+        <div class="target-desc">Negocios de barrio que quieren ordenar sus pedidos.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCRIPTS DE VENTA -->
+<section class="section scripts-section" id="scripts">
+  <div class="section-inner">
+    <div class="reveal">
+      <span class="section-label">Material de ventas</span>
+      <h2 class="section-title">Scripts y mensajes listos para usar</h2>
+      <p class="section-sub">Copiá estos mensajes y usalos tal cual. Están probados para generar interés rápido.</p>
+    </div>
+    <div class="scripts-tabs reveal">
+      <button class="tab-btn active" data-tab="0">Primer contacto</button>
+      <button class="tab-btn" data-tab="1">Seguimiento</button>
+      <button class="tab-btn" data-tab="2">Cierre</button>
+      <button class="tab-btn" data-tab="3">En persona</button>
+    </div>
+    <div class="script-box reveal" id="script-0">
+      <button class="copy-btn" data-script="0">Copiar</button>
+      <p class="script-quote">Hola, ¿cómo estás? Te escribo porque tengo algo que creo que le puede venir muy bien a tu negocio. Es una herramienta digital para panaderías y locales de comida que permite mostrar todos los productos con foto y precio, y recibir los pedidos directo por WhatsApp, de forma mucho más ordenada. La están usando negocios como el tuyo para ahorrar tiempo y verse más profesionales. ¿Puedo mostrarte cómo funciona? No te lleva más de 5 minutos.</p>
+    </div>
+    <div class="script-box reveal hidden" id="script-1">
+      <button class="copy-btn" data-script="1">Copiar</button>
+      <p class="script-quote">Hola, te hago un seguimiento de lo que te comenté el otro día. Te quería mostrar esto en concreto: [link del demo]. Básicamente tus clientes verían algo así, eligen lo que quieren y te llega el pedido ordenado por WhatsApp. ¿Qué te parece? ¿Lo vemos esta semana?</p>
+    </div>
+    <div class="script-box reveal hidden" id="script-2">
+      <button class="copy-btn" data-script="2">Copiar</button>
+      <p class="script-quote">Perfecto, ¿arrancamos? El proceso es simple: te mandamos el link de pago, lo confirmás, y en menos de 48 horas tenés el sistema funcionando con tus productos. Nosotros cargamos todo. Vos solo empezás a compartir el catálogo con tus clientes.</p>
+    </div>
+    <div class="script-box reveal hidden" id="script-3">
+      <button class="copy-btn" data-script="3">Copiar</button>
+      <p class="script-quote">Mirá, te muestro cómo quedaría tu negocio. [mostrar demo en el celular]. Básicamente tus clientes entran acá, ven todo lo que vendés, eligen y te manda un WhatsApp con el pedido listo. Nada de fotos sueltas, nada de explicar precios. ¿Querés que lo activemos?</p>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESO DE ALTA -->
+<section class="section">
+  <div class="section-inner">
+    <div class="reveal">
+      <span class="section-label">Activación</span>
+      <h2 class="section-title">Dar de alta a un cliente es muy fácil</h2>
+      <p class="section-sub">Una vez que el cliente dice que sí, nosotros tomamos el mando. Vos solo avisás.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 16px; margin-top: 48px;">
+      <div class="step-card reveal" style="text-align:center; padding:28px;">
+        <div style="font-size:2rem; margin-bottom:12px;">1️⃣</div>
+        <div class="step-title">Cliente interesado</div>
+        <div class="step-desc">Le mostrás el sistema y dice que sí quiere probarlo.</div>
+      </div>
+      <div class="step-card reveal" style="text-align:center; padding:28px;">
+        <div style="font-size:2rem; margin-bottom:12px;">2️⃣</div>
+        <div class="step-title">Enviás el link de pago</div>
+        <div class="step-desc">Te lo damos nosotros. Lo compartís con tu cliente.</div>
+      </div>
+      <div class="step-card reveal" style="text-align:center; padding:28px;">
+        <div style="font-size:2rem; margin-bottom:12px;">3️⃣</div>
+        <div class="step-title">Cliente realiza el pago</div>
+        <div class="step-desc">Paga el servicio. Vos nos avisás y confirmamos.</div>
+      </div>
+      <div class="step-card reveal" style="text-align:center; padding:28px;">
+        <div style="font-size:2rem; margin-bottom:12px;">4️⃣</div>
+        <div class="step-title">Sistema activo + comisión</div>
+        <div class="step-desc">El cliente tiene su sistema en menos de 48 hs. Vos cobrás.</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 36px; text-align:center;" class="reveal">
+      <a href="https://wa.me/542646706973?text=Hola,%20tengo%20un%20cliente%20listo%20para%20activar" class="btn-whatsapp">💬 Tengo un cliente listo — activar ahora</a>
+    </div>
+  </div>
+</section>
+
+<!-- PAGO -->
+<section class="section" style="background: var(--gray-soft);">
+  <div class="section-inner" style="text-align:center;">
+    <div class="reveal">
+      <span class="section-label">Pagos</span>
+      <h2 class="section-title">Realizá un pago de cliente</h2>
+      <p class="section-sub" style="margin: 0 auto 32px;">Si ya cerraste la venta, usá el botón de pago oficial para activar el sistema del cliente.</p>
+      <a href="https://estudio-web.github.io/A/payments.html" class="btn-primary" style="font-size: 1.05rem; padding: 16px 36px;">💳 Ir al portal de pagos</a>
+      <p style="margin-top: 16px; font-size: 0.82rem; color: var(--text-muted);">El acceso se activa automáticamente una vez confirmado el pago</p>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" id="faq">
+  <div class="section-inner">
+    <div class="reveal">
+      <span class="section-label">Preguntas frecuentes</span>
+      <h2 class="section-title">Todo lo que necesitás saber</h2>
+    </div>
+    <div class="faq-list reveal">
+      <div class="faq-item">
+        <button class="faq-btn">¿Qué estoy vendiendo exactamente? <span class="faq-arrow">▾</span></button>
+        <div class="faq-answer">Un sistema digital que permite a panaderías y locales de comida mostrar sus productos y recibir pedidos directamente por WhatsApp, de forma ordenada y profesional. No es una simple web, es una herramienta de ventas completa.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-btn">¿Necesito saber de tecnología o programación? <span class="faq-arrow">▾</span></button>
+        <div class="faq-answer">Para nada. Tu trabajo es mostrar el sistema y conseguir clientes. Toda la parte técnica — instalación, configuración y soporte — la manejamos nosotros completamente.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-btn">¿Cuándo y cómo cobro mi comisión? <span class="faq-arrow">▾</span></button>
+        <div class="faq-answer">Cobrás una vez que el cliente realiza el pago y el sistema queda activo. Como el servicio es mensual, podés generar ingresos recurrentes de cada cliente que consigas.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-btn">¿Qué pasa si el cliente tiene dudas o preguntas técnicas? <span class="faq-arrow">▾</span></button>
+        <div class="faq-answer">Podés derivarlo directamente a nosotros. Te damos soporte completo para ayudarte a cerrar la venta sin complicaciones. Podés contactarnos en cualquier momento por WhatsApp.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-btn">¿Cuánto tiempo tarda en activarse el sistema del cliente? <span class="faq-arrow">▾</span></button>
+        <div class="faq-answer">En menos de 48 horas hábiles el cliente tiene su sistema funcionando con sus productos cargados. Nosotros nos encargamos de todo el setup inicial.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-btn">¿Puedo ofrecer esto en cualquier ciudad o zona? <span class="faq-arrow">▾</span></button>
+        <div class="faq-answer">Sí. El sistema funciona 100% online, así que podés venderlo en cualquier ciudad o país. No hay restricciones geográficas.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-btn">¿Solo sirve para panaderías o lo puedo vender a otros negocios? <span class="faq-arrow">▾</span></button>
+        <div class="faq-answer">Sirve para cualquier negocio que venda por WhatsApp: rotiserías, casas de viandas, locales de comida para llevar, repostería, almacenes. Si reciben pedidos por mensaje, son un cliente ideal.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-section">
+  <div class="cta-bg"></div>
+  <div style="position: relative; z-index: 1;">
+    <span class="section-label" style="color: #f0c878;">¿Listo para empezar?</span>
+    <h2 class="section-title" style="color: var(--cream); text-align: center; max-width: 580px; margin: 14px auto 16px;">Empezá hoy a generar ingresos como revendedor</h2>
+    <p class="section-sub" style="color: rgba(253,248,242,0.55); text-align: center; max-width: 460px; margin: 0 auto 40px;">Sin inversión, sin técnica. Solo conseguís el cliente y nosotros hacemos el resto.</p>
+    <div class="cta-actions">
+      <a href="https://wa.me/542646706973?text=Hola,%20tengo%20un%20cliente%20listo%20para%20activar" class="btn-whatsapp" style="font-size: 1rem; padding: 16px 32px;">💬 Activar un cliente ahora</a>
+      <a href="https://wa.me/542646706973?text=Necesito%20soporte" class="btn-secondary" style="color: rgba(253,248,242,0.7); border-color: rgba(253,248,242,0.2);">Hablar con soporte</a>
+    </div>
+    <p style="color: rgba(253,248,242,0.3); font-size: 0.8rem; margin-top: 28px;">
+      También podés compartir este material:
+      <a href="https://wa.me/?text=Mirá%20esto:%20https://estudio-web.github.io/A/public/index.html?negocio=panademo"
+         style="color: rgba(253,248,242,0.5); text-decoration: underline; margin-left: 6px;">Compartir por WhatsApp →</a>
+    </p>
+  </div>
+</section>
+
+<footer>
+  <div>Sistema para panaderías — Programa de revendedores</div>
+  <div style="margin-top: 8px;">Soporte: <a href="https://wa.me/542646706973" style="color: rgba(253,248,242,0.4);">WhatsApp</a></div>
+</footer>
+
+<script>
+// ── FAQ TOGGLE ──
+document.querySelectorAll('.faq-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item = btn.parentElement;
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  });
+});
+
+// ── SCRIPTS TABS ──
+const scripts = [
+  "Hola, ¿cómo estás? Te escribo porque tengo algo que creo que le puede venir muy bien a tu negocio. Es una herramienta digital para panaderías y locales de comida que permite mostrar todos los productos con foto y precio, y recibir los pedidos directo por WhatsApp, de forma mucho más ordenada. La están usando negocios como el tuyo para ahorrar tiempo y verse más profesionales. ¿Puedo mostrarte cómo funciona? No te lleva más de 5 minutos.",
+  "Hola, te hago un seguimiento de lo que te comenté el otro día. Te quería mostrar esto en concreto: [link del demo]. Básicamente tus clientes verían algo así, eligen lo que quieren y te llega el pedido ordenado por WhatsApp. ¿Qué te parece? ¿Lo vemos esta semana?",
+  "Perfecto, ¿arrancamos? El proceso es simple: te mandamos el link de pago, lo confirmás, y en menos de 48 horas tenés el sistema funcionando con tus productos. Nosotros cargamos todo. Vos solo empezás a compartir el catálogo con tus clientes.",
+  "Mirá, te muestro cómo quedaría tu negocio. [mostrar demo en el celular]. Básicamente tus clientes entran acá, ven todo lo que vendés, eligen y te manda un WhatsApp con el pedido listo. Nada de fotos sueltas, nada de explicar precios. ¿Querés que lo activemos?"
+];
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const tab = btn.dataset.tab;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.script-box').forEach((box, i) => {
+      box.classList.toggle('hidden', i != tab);
+    });
+  });
+});
+
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const idx = btn.dataset.script;
+    navigator.clipboard.writeText(scripts[idx]).then(() => {
+      const orig = btn.textContent;
+      btn.textContent = '✓ Copiado';
+      setTimeout(() => btn.textContent = orig, 2000);
+    });
+  });
+});
+
+// ── MOBILE MENU ──
+document.getElementById('hamburger').addEventListener('click', () => {
+  document.getElementById('mobileMenu').classList.add('open');
+});
+document.getElementById('menuClose').addEventListener('click', () => {
+  document.getElementById('mobileMenu').classList.remove('open');
+});
+document.querySelectorAll('.menu-link').forEach(link => {
+  link.addEventListener('click', () => {
+    document.getElementById('mobileMenu').classList.remove('open');
+  });
+});
+
+// ── SCROLL REVEAL ──
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ── SMOOTH SCROLL ──
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+</body>
+</html>
